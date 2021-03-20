@@ -1,6 +1,11 @@
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
+from keras import backend as K
+from util import f1_score, recall, precision, plot_graph
+
+PLOT_GRAPH = False
+PLOT_MODEL = False
 
 # implement transformer block as a layer
 class TransformerBlock(layers.Layer):
@@ -39,8 +44,8 @@ class TokenAndPositionEmbedding(layers.Layer):
         return x + positions
 
 # download and prepare dataset
-vocab_size = 20000  # Only consider the top 20k words
-maxlen = 200  # Only consider the first 200 words of each movie review
+vocab_size = 5000  # Only consider the top 5k words
+maxlen = 500  # Only consider the first 500 words of each movie review
 (x_train, y_train), (x_val, y_val) = keras.datasets.imdb.load_data(num_words=vocab_size)
 print(len(x_train), "Training sequences")
 print(len(x_val), "Validation sequences")
@@ -69,7 +74,18 @@ outputs = layers.Dense(2, activation="softmax")(x)
 model = keras.Model(inputs=inputs, outputs=outputs)
 
 # train and evaluate
-model.compile("adam", "sparse_categorical_crossentropy", metrics=["accuracy"])
-history = model.fit(
-    x_train, y_train, batch_size=32, epochs=2, validation_data=(x_val, y_val)
-)
+model.compile("adam", "sparse_categorical_crossentropy", metrics=["accuracy", f1_score, precision, recall])
+history = model.fit(x_train, y_train, batch_size=64, epochs=3, verbose=1, validation_data=(x_val, y_val))  # starts training
+
+# Final evaluation of the model
+scores = model.evaluate(x_val, y_val, verbose=0)
+print(scores)
+print("Accuracy:%.2f%%" % (scores[1] * 100))
+
+if PLOT_GRAPH:
+    plot_graph(history)
+
+if PLOT_MODEL:
+    img_file = 'tmp/transformer2.png'
+    keras.utils.plot_model(model, to_file=img_file, show_shapes=True,  show_layer_names=True)
+

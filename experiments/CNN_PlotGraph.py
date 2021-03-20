@@ -77,6 +77,6 @@ if __name__ == '__main__':
     # Plot the graph
     plot_graph(history)
 
-    img_file = 'tmp/CNN_hidden_dropout_base.png'
+    img_file = '../tmp/CNN_hidden_dropout_base.png'
     keras.utils.plot_model(model, to_file=img_file, show_shapes=True,  show_layer_names=True)
 

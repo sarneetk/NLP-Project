@@ -67,7 +67,7 @@ if __name__ == '__main__':
     print(model.summary())
     # A large batch size of 64 reviews is used to space out weight updates.
     #model.fit(X_train, y_train, epochs=1, batch_size=64)
-    history=model.fit(X_train, y_train, batch_size=64, epochs=15, verbose=1,  validation_data=(X_test, y_test))  # starts training
+    history=model.fit(X_train, y_train, batch_size=64, epochs=1, verbose=1,  validation_data=(X_test, y_test))  # starts training
 
     # Final evaluation of the model
     scores = model.evaluate(X_test, y_test, verbose=0)
