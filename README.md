@@ -27,12 +27,14 @@ pip install keras
 
 # if you want to create graphs
 pip install pydot
+pip install pydotplus
 pip install graphviz
 ```
 
 To run a model, simply run:
 
 ```
-python lstm.py
-python bi_lstm.py
+python LSTM.py
+python LSTM_bidirectional.py
+python transformer.py
 ```

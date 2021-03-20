@@ -1,14 +1,11 @@
 import numpy
-import tensorflow as tf
-# from tf.keras.datasets import imdb
-from tensorflow import keras
-# from keras import datasets
 from keras.datasets import imdb
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
 from keras.layers.embeddings import Embedding
 from keras.preprocessing import sequence
+from util import f1_score, recall, precision
 
 __all__ = [Sequential, Dense, LSTM]
 
@@ -30,18 +27,28 @@ X_test = sequence.pad_sequences(X_test, maxlen=max_review_length)
 # The next layer is the LSTM layer with 100 memory units (smart neurons).
 # Finally, because this is a classification problem we use a Dense output layer with a single neuron and
 # a sigmoid activation function to make 0 or 1 predictions for the two classes (good and bad) in the problem.
-# input dropout and recurrent drop out has been added to overcome overfitting
 embedding_vector_length = 32
 model = Sequential()
 model.add(Embedding(top_words, embedding_vector_length, input_length=max_review_length))
-# lstm with input dropout and recurrent dropout
-model.add(LSTM(100,dropout=0.2,recurrent_dropout=0))
+model.add(LSTM(100))
 model.add(Dense(1, activation='sigmoid'))
 # log loss is used as the loss function (ADAM optimization algorithm).
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', f1_score, precision, recall])
+
 print(model.summary())
 # A large batch size of 64 reviews is used to space out weight updates.
 model.fit(X_train, y_train, epochs=3, batch_size=64)
-# Final evaluation of the model
+
+# Evaluation of the model with training data
+scores_train = model.evaluate(X_train, y_train, verbose=0)
+print("Training Data: ")
+print("Accuracy: %.2f%%, F_1Score: %.2f%% , Precision: %.2f%%, Recall: %.2f%% " % (scores_train[1]*100, scores_train[2]*100,
+                                                                                   scores_train[3]*100, scores_train[4]*100))
+
+# Evaluation of the model with test data
 scores = model.evaluate(X_test, y_test, verbose=0)
-print("Accuracy:%.2f%%" % (scores[1] * 100))
+print("Test Data:")
+print("Accuracy: %.2f%%, F_1Score: %.2f%% , Precision: %.2f%%, Recall: %.2f%%" % (scores[1] * 100, scores[2] * 100,
+                                                                                 scores[3] * 100, scores[4] * 100))
+
+

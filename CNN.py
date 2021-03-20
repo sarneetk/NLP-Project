@@ -30,7 +30,16 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.summary()
 # Fit the model
-model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=1, batch_size=128, verbose=2)
-# Final evaluation of the model
+model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=3, batch_size=128, verbose=2)
+
+# Evaluation of the model with training data
+scores_train = model.evaluate(X_train, y_train, verbose=0)
+print("Training Data: ")
+print("Accuracy: %.2f%%, F_1Score: %.2f%% , Precision: %.2f%%, Recall: %.2f%% " % (scores_train[1]*100, scores_train[2]*100,
+                                                                                   scores_train[3]*100, scores_train[4]*100))
+
+# Evaluation of the model with test data
 scores = model.evaluate(X_test, y_test, verbose=0)
-print("Accuracy: %.2f%%" % (scores[1]*100))
+print("Test Data:")
+print("Accuracy: %.2f%%, F_1Score: %.2f%% , Precision: %.2f%%, Recall: %.2f%%" % (scores[1] * 100, scores[2] * 100,
+                                                                                 scores[3] * 100, scores[4] * 100))
