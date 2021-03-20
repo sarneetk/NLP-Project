@@ -52,5 +52,5 @@ if PLOT_GRAPH:
     plot_graph(history)
 
 if PLOT_MODEL:
-    img_file = 'tmp/lstm-bi.png'
+    img_file = 'model_diagrams/lstm-bi.png'
     keras.utils.plot_model(model, to_file=img_file, show_shapes=True,  show_layer_names=True)
