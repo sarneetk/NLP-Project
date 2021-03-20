@@ -24,8 +24,12 @@ Ensure you have installed all the dependencies:
 ```
 pip install tensorflow
 pip install keras
+```
 
-# if you want to create graphs
+if you want to create graphs:
+
+```
+pip install matplotlib
 pip install pydot
 pip install pydotplus
 pip install graphviz
