@@ -1,4 +1,5 @@
 # CNN for the IMDB problem
+from tensorflow import keras
 from keras.datasets import imdb
 from keras.models import Sequential
 from keras.layers import Dense
@@ -7,7 +8,10 @@ from keras.layers.convolutional import Conv1D
 from keras.layers.convolutional import MaxPooling1D
 from keras.layers.embeddings import Embedding
 from keras.preprocessing import sequence
-from util import f1_score, recall, precision
+from util import f1_score, recall, precision, plot_graph
+
+PLOT_GRAPH = False
+PLOT_MODEL = False
 
 # load the dataset but only keep the top 5000 words, zero the rest
 top_words = 5000
@@ -32,7 +36,7 @@ model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy', f1_score, precision, recall])
 model.summary()
 # Fit the model
-model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=3, batch_size=128, verbose=2)
+history = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=3, batch_size=128, verbose=2)
 
 # Evaluation of the model with training data
 scores_train = model.evaluate(X_train, y_train, verbose=0)
@@ -45,3 +49,10 @@ scores = model.evaluate(X_test, y_test, verbose=0)
 print("Test Data:")
 print("Accuracy: %.2f%%, F_1Score: %.2f%% , Precision: %.2f%%, Recall: %.2f%%" % (scores[1] * 100, scores[2] * 100,
                                                                                  scores[3] * 100, scores[4] * 100))
+
+if PLOT_GRAPH:
+    plot_graph(history)
+
+if PLOT_MODEL:
+    img_file = 'model_diagrams/cnn.png'
+    keras.utils.plot_model(model, to_file=img_file, show_shapes=True, show_layer_names=True)

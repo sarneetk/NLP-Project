@@ -1,11 +1,15 @@
 import numpy
+from tensorflow import keras
 from keras.datasets import imdb
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
 from keras.layers.embeddings import Embedding
 from keras.preprocessing import sequence
-from util import f1_score, recall, precision
+from util import f1_score, recall, precision, plot_graph
+
+PLOT_GRAPH = False
+PLOT_MODEL = False
 
 __all__ = [Sequential, Dense, LSTM]
 
@@ -37,8 +41,7 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy',
 
 print(model.summary())
 # A large batch size of 64 reviews is used to space out weight updates.
-model.fit(X_train, y_train, epochs=3, batch_size=64)
-
+history = model.fit(X_train, y_train, batch_size=64, epochs=3, verbose=1, validation_data=(X_test, y_test))
 # Evaluation of the model with training data
 scores_train = model.evaluate(X_train, y_train, verbose=0)
 print("Training Data: ")
@@ -52,3 +55,9 @@ print("Accuracy: %.2f%%, F_1Score: %.2f%% , Precision: %.2f%%, Recall: %.2f%%" %
                                                                                  scores[3] * 100, scores[4] * 100))
 
 
+if PLOT_GRAPH:
+    plot_graph(history)
+
+if PLOT_MODEL:
+    img_file = 'model_diagrams/cnn.png'
+    keras.utils.plot_model(model, to_file=img_file, show_shapes=True, show_layer_names=True)
